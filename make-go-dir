@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#Setting up directory structure for a Go developer.
+
+
+if [[ "${1}" = "" || "${2}" = "" || "${#}" -gt 2 ]]  #Check to see if argument provide and the correct amount.
+then
+	echo "You need to provide two arguments for this script to work."
+	echo "Usage: make-go-dir <root directory name> <identifier name>"
+else
+	echo "I am about to create a directory structure named ${1}."
+	echo "Do you want me to continue? [Yes/no]"
+	read choice
+	
+	while [[ $choice != "Yes" && $choice != "no" ]]  #Prompts user to give accurate response.
+	do
+		echo "Do you want me to continue? [Yes/no]"
+		read choice
+	done
+
+	if [[ "$choice" = "Yes" ]] #Creating the directoy structure.
+	then
+		echo "Create directory structure..."
+		mkdir "${1}"
+		cd "${1}"
+		mkdir bin
+		mkdir cmd
+		mkdir internals
+		mkdir migrations
+		mkdir remote
+		touch go.mod
+		touch Makefile
+		cd cmd
+		mkdir api
+		cd api
+		touch main.go
+		#Writing the go script to the main.go file.
+        echo '
+		// File: cmd/api/main.go
+
+		package main
+
+		import "fmt"
+
+		func main(){
+			fmt.Println("Hello world!")
+		}
+		' > /home/pascual/"${1}"/cmd/api/main.go
+		cd /home/pascual/"${1}"
+		#go mod init "${2}/pascual"
+		#echo "${1}.${2}" > go.mod
+		go mod edit -module="${2}/${1}"
+		go mod tidy
+		echo "I have created a *main.go* file for you to test the directory structure."
+		echo "Type *go run .cmd/api* at the root directory of your project to test your project."
+		echo "Thank you!"
+	else
+		echo "Abort"
+	fi
+fi
